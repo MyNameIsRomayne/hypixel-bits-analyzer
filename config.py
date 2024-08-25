@@ -24,6 +24,8 @@ api_url = "https://api.hypixel.net/v2"
 always_revalidate_key     = False # use this if you expect your keys to be invalidated a lot
 announce_queries          = False # debug option, print on each query to debug query optimizaiton
 disable_cooldown_limiters = True # For having auction house data load faster. Disable if you keep hitting rate limits
+include_auction_house     = True # In case you dont feel like doing AH stuff
+include_bazaar            = True # I dunno but i guess
 cooldown_request_seconds  = 1 # 300 per 5mins is listed via API, so 1 per second is compliant
 
 json_key_api_key            = "api_key"

@@ -38,11 +38,15 @@ if __name__ == "__main__":
 
     api.info()
 
-    bz = Bazaar(api)
+    if not include_bazaar and not include_auction_house:
+        print("No source to compare prices with. Please enable either the auction house and/or the bazaar.")
 
-    ah = AuctionHouse(api)
+    if include_bazaar:
+        bz = Bazaar(api)
 
-    ah_items = ah.get_items_keyed_by("item_name")
+    if include_auction_house:
+        ah = AuctionHouse(api)
+        ah_items = ah.get_items_keyed_by("item_name")
 
     item_data = []
 
@@ -52,16 +56,20 @@ if __name__ == "__main__":
         coins_for_product = 0
         coins_per_bit = 0
         ah_entries = 0
-        if product_id != None:
+        is_auction_house_item = False
+        if include_bazaar and (product_id != None):
             coins_for_product = get_item_bz_price(bz.whole_bazaar_data["products"][product_id])
             coins_for_product *= (1 - BAZAAR_TAX)
-        elif (item_key in ah_items.keys()):
+        elif include_auction_house and (item_key in ah_items.keys()):
+            is_auction_house_item = True
             ah_entries = len(ah_items[item_key])
             coins_for_product = get_item_ah_price(item_key, ah_items)
             # Fees (Listing BIN)
             coins_for_product -= get_profits_fee(coins_for_product)
             # Fees (Duration)
             coins_for_product -= AUCTION_HOUSE_FEE
+        else:
+            continue
 
         coins_per_bit = coins_for_product / bit_items[item_key]["cost_bits"]
 
@@ -69,8 +77,8 @@ if __name__ == "__main__":
             "item_name": item_key,
             "coins_per_bit": round(coins_per_bit, 2),
             "coins_for_product": round(coins_for_product, 2),
-            "on_ah": product_id == None,
-            "ah_entries": ah_entries
+            "on_ah": is_auction_house_item,
+            "ah_entries": ah_entries,
         })
 
     item_data.sort(key=(lambda s: s["coins_per_bit"]), reverse=True)
