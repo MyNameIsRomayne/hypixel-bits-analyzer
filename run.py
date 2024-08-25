@@ -44,18 +44,19 @@ if __name__ == "__main__":
 
     ah_items = ah.get_items_keyed_by("item_name")
 
-    ranked_items = []
+    item_data = []
 
     for item_key in bit_items:
         product_id = bit_items[item_key]["product_id"]
         # bz handling
         coins_for_product = 0
         coins_per_bit = 0
+        ah_entries = 0
         if product_id != None:
             coins_for_product = get_item_bz_price(bz.whole_bazaar_data["products"][product_id])
             coins_for_product *= (1 - BAZAAR_TAX)
-        else:
-            # Auction house
+        elif (item_key in ah_items.keys()):
+            ah_entries = len(ah_items[item_key])
             coins_for_product = get_item_ah_price(item_key, ah_items)
             # Fees (Listing BIN)
             coins_for_product -= get_profits_fee(coins_for_product)
@@ -63,15 +64,28 @@ if __name__ == "__main__":
             coins_for_product -= AUCTION_HOUSE_FEE
 
         coins_per_bit = coins_for_product / bit_items[item_key]["cost_bits"]
-        insertion_index = 0
-        for item in ranked_items:
-            if item[1] < coins_per_bit:
-                break
-            insertion_index += 1
-        ranked_items.insert(insertion_index, [item_key, coins_per_bit, coins_for_product])
 
-    for item in ranked_items:
-        print(f"{item[0]}: {round(item[1], 2)} coins/bit")
+        item_data.append({
+            "item_name": item_key,
+            "coins_per_bit": round(coins_per_bit, 2),
+            "coins_for_product": round(coins_for_product, 2),
+            "on_ah": product_id == None,
+            "ah_entries": ah_entries
+        })
+
+    item_data.sort(key=(lambda s: s["coins_per_bit"]), reverse=True)
+
+    rank = 1
+    for entry in item_data:
+        print('')
+        print(f"{entry["item_name"]} (#{rank}):")
+        sold_on = "auction house" if entry["on_ah"] else "bazaar"
+        print(f"Sold on {sold_on}")
+        if (entry["on_ah"]):
+            print(f"{entry["ah_entries"]} entries")
+        print(f"{entry["coins_for_product"]} coins per item")
+        print(f"{entry["coins_per_bit"]} coins/bit")
+        rank += 1
     
 # 6 -> 45
 # 7 -> 50
