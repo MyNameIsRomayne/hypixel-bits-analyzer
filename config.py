@@ -21,9 +21,10 @@ api_bazaar_data_file    = data_dir + Path("bazaar.json")
 
 api_url = "https://api.hypixel.net/v2"
 
-always_revalidate_key    = False # use this if you expect your keys to be invalidated a lot
-announce_queries         = False # debug option, print on each query to debug query optimizaiton
-cooldown_request_seconds = 1 # 300 per 5mins is listed via API, so 1 per second is compliant
+always_revalidate_key     = False # use this if you expect your keys to be invalidated a lot
+announce_queries          = False # debug option, print on each query to debug query optimizaiton
+disable_cooldown_limiters = True # For having auction house data load faster. Disable if you keep hitting rate limits
+cooldown_request_seconds  = 1 # 300 per 5mins is listed via API, so 1 per second is compliant
 
 json_key_api_key            = "api_key"
 json_key_api_key_validated  = "valid_key"

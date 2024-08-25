@@ -78,7 +78,7 @@ class HypixelAPI():
         self.update_api_key(new_key)
 
     # note: this runs on avg once per 1s, doesnt really need to be optimal (yay python)
-    def do_request(self, url, save_temporarily = True, ignore_cooldown = False, params:dict={}):
+    def do_request(self, url, save_temporarily = True, ignore_cooldown = disable_cooldown_limiters, params:dict={}):
         """
         Handle sending a request and returning contents with an assumed response as JSON.
         Raises a ConnectionRefusedError if the returned success argument is not true.
