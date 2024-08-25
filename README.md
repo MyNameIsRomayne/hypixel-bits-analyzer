@@ -1,4 +1,4 @@
-![a cat](readme-image2.png)
+![a cat](readme-image.png)
 
 # BitOptimizer (shit name idc)
 
