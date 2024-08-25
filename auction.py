@@ -186,8 +186,6 @@ class AuctionHouse():
                 return
         # We now have at least something in auctiondata, including total pages and stuff
         print("Updating auction pages. Please do not interrupt the program, retrieved data is only stored upon completion.")
-        print("Dev's Note: This takes a while because we wait the other end of a second per request to respect the rate limit.")
-        print("If you want it to go faster, consider overriding the cooldown limiters. Undefined behavior may occur if you go over the rate limit, though!")
         pbar = progressbar.ProgressBar(maxval=self.total_pages).start()
         for pageNum in range(start_page, self.total_pages):
             pbar.update(pageNum + 1)
