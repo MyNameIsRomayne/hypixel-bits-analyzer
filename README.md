@@ -21,5 +21,3 @@ Literally just `python run.py`, enter your API key to forever save it into `hypi
 ## Support
 
 I wont help if you contact me. I trust you can fix this crappy python yourself, it's really not that spaghetti or complicated to be real.
-
-![From Shen Comix (absolutely used without permission) https://x.com/shenanigansen](readme-image.png)
