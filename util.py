@@ -4,9 +4,16 @@ Don't expect quality.
 Copyright (C) 2024 Romayne (Contact @ https://github.com/MyNameIsRomayne)
 """
 
+import os
 from os.path import exists
 from math import floor
 from requests import get
+import pathlib
+
+class Path(pathlib.Path):
+    """A brief extension of the Path class from pathlib to allow for addition operations."""
+    def __add__(self, otherPath:str|pathlib.Path):
+        return Path(f"{self}/{otherPath}")
 
 # Returns whether the given file exists. If create is True, creates the file
 # Returns True if the file already existed, False otherwise.
@@ -15,15 +22,19 @@ def ensure_file_exists(file_path:str, create = False):
         return True
     else:
         if create:
+            dir = os.path.dirname(file_path)
+            os.makedirs(dir, mode=777, exist_ok=True)
             with open(file_path, "x"):
                 pass
         return False
 
 # Read something from the given file. This returns None if the file doesn't exist.
-def read_file_contents(file_path:str,
+def read_file_contents(file_path:str|Path,
                        lines = False,
                        encoding = "utf-8",
                        read_mode = "r"):
+    if isinstance(file_path, Path):
+        file_path = str(file_path)
     if not ensure_file_exists(file_path):
         return None
     if "b" in read_mode:
@@ -36,13 +47,16 @@ def read_file_contents(file_path:str,
             return file.read()
 
 # Write out some string to the file path given. This will create the file if it does not yet exist.
-def write_file_contents(file_path:str,
+def write_file_contents(file_path:str|Path,
                         contents:str,
-                        write_mode = "w"):
+                        write_mode = "w",
+                        error_handling = "ignore"):
+    if isinstance(file_path, Path):
+        file_path = str(file_path)
     ensure_file_exists(file_path, create = True)
     if (not "w" in write_mode) and (not "a" in write_mode):
         print(f"WARN: No valid 'w' or 'a' mode passed to write_mode {write_mode}. File writing will probably fail!")
-    with open(file = file_path, mode = write_mode, errors="ignore") as file:
+    with open(file = file_path, mode = write_mode, errors=error_handling) as file:
         file.write(contents)
 
 # Write out a python list to a given file. Will cast each content to a string unless string_method is provided.
