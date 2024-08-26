@@ -187,9 +187,13 @@ class AuctionHouse():
         # We now have at least something in auctiondata, including total pages and stuff
         print("Updating auction pages. Please do not interrupt the program, retrieved data is only stored upon completion.")
         pbar = progressbar.ProgressBar(maxval=self.total_pages).start()
-        for pageNum in range(start_page, self.total_pages):
+        # Done with a counter instead of a for-loop as total_pages may update.
+        # This thus prevents issues with trying to get pages beyond what currently exist, but used to
+        pageNum = start_page
+        while pageNum < self.total_pages:
             pbar.update(pageNum + 1)
             self.get_page(pageNum)
+            pageNum += 1
         self.save_to_local()
     
     def get_auctions_as_list(self) -> list[SkyblockAuctionData]:
